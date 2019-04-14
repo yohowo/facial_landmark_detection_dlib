@@ -50,6 +50,7 @@ import os
 import dlib
 import glob
 import numpy as np
+import cv2
 
 
 def main():
@@ -75,7 +76,7 @@ def main():
     for f in glob.glob(os.path.join(faces_folder_path, "*.jpg")):
         print("Processing file: {}".format(f))
         img = dlib.load_rgb_image(f)
-
+        fo = open(f + "_pts.txt", "a")
         # win.clear_overlay()
         # win.set_image(img)
 
@@ -83,21 +84,63 @@ def main():
         # second argument indicates that we should upsample the image 1 time. This
         # will make everything bigger and allow us to detect more faces.
         dets = detector(img, 1)
-        print("Number of faces detected: {}".format(len(dets)))
+        # print("Number of faces detected: {}".format(len(dets)))
+        img = cv2.imread(f)
+        h, w = img.shape[0:2]
+        # print(h)
+        # print(w)
+
+
+        h_pts = np.zeros(6)
+        w_pts = np.zeros(6)
+
+        h_inc = h/5
+        w_inc = w/5
+
+        for i in range(1, 5):
+            h_pts[i] = h_inc * i
+            w_pts[i] = w_inc * i
+
+        h_pts[5] = h - 1
+        w_pts[5] = w - 1
+        h_pts = h_pts.astype(np.int)
+        w_pts = w_pts.astype(np.int)
+
+        # print(h_pts)
+        # print(w_pts)
+
+        for i in range(6):
+            for j in range (6):
+                x = w_pts[i]
+                y = h_pts[j]
+                fo.write(str(x) + " " + str(y) + "\n")
+
+
+        #
+        # fo.write("0 0")
+        # fo.write()
+
         for k, d in enumerate(dets):
-            print("Detection {}: Left: {} Top: {} Right: {} Bottom: {}".format(
-                k, d.left(), d.top(), d.right(), d.bottom()))
+            # print("Detection {}: Left: {} Top: {} Right: {} Bottom: {}".format(
+            #     k, d.left(), d.top(), d.right(), d.bottom()))
             # Get the landmarks/parts for the face in box d.
             shape = predictor(img, d)
             # print("Part 0: {}, Part 1: {} ...".format(shape.part(0), shape.part(1)))
             for z in range(68):
-                print(type(shape.part(z)))
-                # fo.write(str(shape.part(z)))
+                coord = str(shape.part(z))
+                coord = coord.replace("(", "").replace(",", "").replace(")", "")
+                # coord = coord.replace(",", "")
+                # coord = coord.replace(",", "")
+                x, y = coord.split()
+                coord = str(x) + " " + str(y) + "\n"
+                # print(coord)
+                fo.write(str(coord))
             # Draw the face landmarks on the screen.
             # win.add_overlay(shape)
 
         # win.add_overlay(dets)
-        dlib.hit_enter_to_continue()
+        fo.close()
+        # dlib.hit_enter_to_continue()
 
 if __name__ == '__main__':
     main()
