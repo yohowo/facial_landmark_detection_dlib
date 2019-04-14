@@ -110,11 +110,20 @@ def main():
         # print(w_pts)
 
         for i in range(6):
-            for j in range (6):
-                x = w_pts[i]
-                y = h_pts[j]
-                fo.write(str(x) + " " + str(y) + "\n")
+            x = 0
+            y = h_pts[i]
+            fo.write(str(x) + " " + str(y) + "\n")
+            x = w_pts[5]
+            fo.write(str(x) + " " + str(y) + "\n")
 
+        fo.write(str(w_pts[1]) + " " + str(0) + "\n")
+        fo.write(str(w_pts[2]) + " " + str(0) + "\n")
+        fo.write(str(w_pts[3]) + " " + str(0) + "\n")
+        fo.write(str(w_pts[4]) + " " + str(0) + "\n")
+        fo.write(str(w_pts[1]) + " " + str(h_pts[5]) + "\n")
+        fo.write(str(w_pts[2]) + " " + str(h_pts[5]) + "\n")
+        fo.write(str(w_pts[3]) + " " + str(h_pts[5]) + "\n")
+        fo.write(str(w_pts[4]) + " " + str(h_pts[5]) + "\n")
 
         #
         # fo.write("0 0")
